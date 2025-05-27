@@ -32,7 +32,6 @@ CREATE TABLE sightings (
 name VARCHAR(20);
 name('Jakir') -- ৫ টা ক্যারেক্টার এর জায়গা নিবে
 ```
-
 #### b. CHAR(n)
 1. সবসময় n সংখ্যক অক্ষরই রাখবে
 2. যদি স্ট্রিং ছোট হয়, তাহলে ডানদিকে স্পেস দিয়ে পূরণ করে (padding)
@@ -41,6 +40,20 @@ name VARCHAR(5)
 name ('USA') --- 'USA  ' এভাবে রাখবে। 
 ```
 
+
+# 5. Explain the purpose of the WHERE clause in a SELECT statement?
+`SELECT` এবং `WHERE` ক্লজ ব্যবহার করে কন্ডিশন এর উপর বেজ করে একটা টেবিল এর ডাটা রিট্রাইভ করা হয়। ফলে অনেক ইফিশিয়েন্টলি এবং স্পেসিফিক ডাটা বের করা যায়। 
+#### a. WHERE:
+একটা টেবিল এ অনেক সারি থাকতে পারে সকল সারি আমাদের প্রয়োজন নাও হতে পারে। `WHERE` ক্লজ দিয়ে ঐ সকল সারিকে আমরা সিলেক্ট করব যেই স
+সকল সারিকে আমাদের প্রয়োজন। এখানে বিভিন্ন কন্ডিশনাল অপারেটর ব্যবহার করা হয়। আবার `LIKE` `IS NULL` etc ও ব্যবহার করা যায়।
+
+#### b. SELECT:
+সিলেক্ট দিয়ে একটা টেবিলের নির্দিষ্ট কিছু কলামকে রিট্রাইভ করা হয়। এতে কুয়েরি অনেক ফাস্ট হয়। অপ্রয়োজনীয় ডাটা আসে না।
+যেমনঃ
+```sql
+SELECT name FROM rangers
+WHERE region = 'River Delta'; -- এখানে SELECT দিয়ে শুধুমাত্র name column কে এবং এই কলাম এর যেই সকল সারি এর region = 'River Delta' সেই সকল সারিকে রিট্রাইভ করতে WHERE clause ব্যবহার করা হয়েছে।
+```
 
 # 6. What are the LIMIT and OFFSET clauses used for?
 `লিমিট` দিয়ে একটা সিলেক্ট কুয়েরি এর কতগুলো সারি দেখানো হবে এবং `অফসেট` ক্লজ দিয়ে কতগুলো সারি স্কিপ করা হবে তা নির্ধারন করা হয়। এই দুই ক্লজ দিয়ে পেজিনেশন করা হয়। যার মাধ্যমে আমরা একটা বড় ডাটাবেজ থেকে একটা নির্দিষ্ট পরিমানে ডাটা দেখাতে পারি।
@@ -58,4 +71,27 @@ We can define unions and intersections using `type`. But `interface` doesn't pro
 SELECT * FROM sightings
 LIMIT 5
 OFFSET 10
+```
+
+
+# 10. How can you calculate aggregate functions like COUNT(), SUM(), and AVG() in PostgreSQL?
+`Aggregate function` গুলো একটা গ্রুপের উপরে কাজ করে। `COUNT(*)` দিয়ে একটা টেবিল এর কয়টা সারি আছে তা বের করা যায়। আবার গ্রুপে ভাগ করলে ঐ গ্রুপের আন্ডারে কয়টা সারি আছে তা বের করা যায়। একই ভাবে অন্য aggregate function গুলোও কাজ করে। যেমনঃ
+#### 1. COUNT():
+```sql
+SELECT name, COUNT(*) as total_sightings FROM sightings 
+    JOIN rangers ON sightings.ranger_id = rangers.ranger_id 
+    GROUP BY rangers.name 
+    ORDER BY rangers.name ASC; --- প্রতিজন rangers কতগুলো sighting করেছে তা বের করার জন্যে ব্যবহার হচ্ছে
+```
+
+#### 2. SUM():
+`Sum` দিয়ে যেই কলাম এর ডাটা এর যোগফল চাচ্ছি তা বলে দিলে সেটা পাব।
+```sql
+SELECT SUM(species_id) FROM sightings;
+```
+
+#### 3. AVG():
+`AVG` দিয়ে যেই কলাম এর ডাটা এর এভারেজ চাচ্ছি তা বলে দিলে সেটা পাব।
+```sql
+SELECT AVG(species_id) FROM sightings;
 ```
